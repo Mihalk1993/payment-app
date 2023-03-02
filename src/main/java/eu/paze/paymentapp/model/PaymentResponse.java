@@ -50,6 +50,15 @@ public class PaymentResponse {
         @JsonProperty("redirectUrl")
         private String redirectUrl;
 
+        public Result(String id, String paymentType, String state, BigDecimal amount, String currency, String redirectUrl) {
+            this.id = id;
+            this.paymentType = paymentType;
+            this.state = state;
+            this.amount = amount;
+            this.currency = currency;
+            this.redirectUrl = redirectUrl;
+        }
+
         public String getId() {
             return id;
         }

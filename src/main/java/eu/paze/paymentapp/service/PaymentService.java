@@ -39,7 +39,12 @@ public class PaymentService {
         paymentRequest.setCurrency("EUR");
 
         HttpEntity<PaymentRequest> requestEntity = new HttpEntity<>(paymentRequest, headers);
-        ResponseEntity<PaymentResponse> responseEntity = restTemplate.postForEntity(baseUrl + "/payments", requestEntity, PaymentResponse.class);
+        ResponseEntity<PaymentResponse> responseEntity;
+        try {
+            responseEntity = restTemplate.postForEntity(baseUrl + "/payments", requestEntity, PaymentResponse.class);
+        } catch (RuntimeException e) {
+            throw new PaymentException("Invalid payment request");
+        }
 
         HttpStatus statusCode = (HttpStatus) responseEntity.getStatusCode();
         PaymentResponse paymentResponse = responseEntity.getBody();

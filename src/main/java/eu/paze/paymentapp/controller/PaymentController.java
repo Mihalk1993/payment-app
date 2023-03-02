@@ -3,6 +3,7 @@ package eu.paze.paymentapp.controller;
 import eu.paze.paymentapp.model.PaymentRequest;
 import eu.paze.paymentapp.service.PaymentService;
 import eu.paze.paymentapp.util.exception.PaymentException;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,19 +26,13 @@ public class PaymentController {
     }
 
     @PostMapping("/payment")
-    public String processPayment(@ModelAttribute("paymentRequest") PaymentRequest paymentRequest, RedirectAttributes redirectAttributes) {
+    public String processPayment(@ModelAttribute("paymentRequest") PaymentRequest paymentRequest, RedirectAttributes redirectAttributes, HttpServletRequest request) {
         try {
             String redirectUrl = paymentService.createPayment(paymentRequest.getAmount());
             return "redirect:" + redirectUrl;
         } catch (PaymentException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
-            return "redirect:/error";
+            return "redirect:" + request.getContextPath() + "/error";
         }
-    }
-
-    @GetMapping("/error")
-    public String showErrorPage(Model model, @ModelAttribute("errorMessage") String errorMessage) {
-        model.addAttribute("errorMessage", errorMessage);
-        return "error";
     }
 }
